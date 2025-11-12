@@ -25,7 +25,7 @@ def elegir_mejor_chunck(pregunta, cantidad_chunks):
 
         
         query = text("""
-            SELECT respuesta, pregunta
+            SELECT num_video, autor, fecha, titulo, tags, contenido
             FROM chunks
             ORDER BY embedding <=> (:pregunta)::vector
             LIMIT :cantidad

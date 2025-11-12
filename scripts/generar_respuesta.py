@@ -23,7 +23,11 @@ def generar_respuesta_stream(pregunta_usuario, historial):
     
     chunks = elegir_mejor_chunck(pregunta_usuario,CHUNCKS_POR_DOCUMENTO)
 
-    contexto = "\n\n".join([f" Num° Video:{c['num_video']} \n Contenido:{c['contenido']} \n" for c in chunks])
+    contexto = "\n\n".join([f"""Num° Video:{c['num_video']} \n 
+Autor:{c['autor']} \n
+Fecha:{c['fecha']} \n
+Titulo:{c['titulo']} \n 
+Contenido:{c['contenido']} \n""" for c in chunks])
     print(contexto)
     modelo = MODELO
     prompt = prompt_base()
@@ -32,7 +36,7 @@ def generar_respuesta_stream(pregunta_usuario, historial):
         mensajes = [
             {
                 "role": "system",
-                "content": "Responde exactamente: Lo siento, aún no he cargado información a mi legado"
+                "content": "Responde exactamente: Lo siento, aún no tengo información sobre ello"
             }
         ]
     else:

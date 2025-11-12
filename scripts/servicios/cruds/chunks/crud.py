@@ -5,7 +5,7 @@ from .utils import limpiar_texto
 import numpy as np
 import numpy as np
 from sqlalchemy import text
-
+import json
 from scripts.utilitarios.embedding.embedding import generar_embedding
 
 
@@ -17,6 +17,11 @@ engine = create_engine(DATABASE_URL)
 
 
 
+def listar_chunks():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT id,num_video,autor,fecha,titulo,tags,contenido FROM chunks"))
+        rows = [dict(row._mapping) for row in result]
+        print(json.dumps(rows, indent=2, ensure_ascii=False))
 
 
 def dividir_en_chunks(texto, palabras_por_chunk=600):
@@ -65,5 +70,17 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido):
             new_id = result.fetchone()[0]
             print(f"✅ Chunk {idx} insertado con id {new_id}")
 
-#if __name__ == "__main__":
-    #editar(1,"Charles huaman llaccta")
+def eliminar(id:int):
+    with engine.connect() as conn:
+        result = conn.execute(text("DELETE FROM chunks WHERE id = :id RETURNING id"),{"id":id})
+        conn.commit()
+        deleted = result.fetchone()
+        if deleted:
+            print(f"🗑️ Persona con ID {id} eliminada correctamente.")
+        else:
+            print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
+
+
+if __name__ == "__main__":
+    eliminar(2)
+    listar_chunks()

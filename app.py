@@ -107,7 +107,7 @@ async def log(
 
 
 
-@app.post("/subir-contenido")
+@app.post("/subir-informacion")
 async def subir_archivo(
     num_video: str = Form(...),
     autor: str = Form(...),
