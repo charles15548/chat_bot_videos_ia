@@ -88,5 +88,7 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     mejores = resultados[:cantidad_chunks]
 
     print(f"🔍 Se encontraron {len(mejores)} chunks relevantes.")
-    print(f"{resultados["contenido"]} ")
+    for r in mejores:
+        print(r["contenido"])
+
     return mejores
