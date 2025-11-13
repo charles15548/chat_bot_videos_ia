@@ -54,12 +54,12 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     if FAISS_CACHE is None or META_CACHE is None:
         FAISS_CACHE, META_CACHE = cargar_todos_los_indices()
 
-    # 🔹 Generar embedding de la pregunta
+    #  Generar embedding de la pregunta
     embedding = np.array(generar_embedding(pregunta), dtype=np.float32).reshape(1, -1)
 
     resultados = []
 
-    # 🔹 Iterar sobre cada índice y su metadata asociada
+    #  Iterar sobre cada índice y su metadata asociada
     for idx, index in enumerate(FAISS_CACHE):
         distancias, ids = index.search(embedding, cantidad_chunks)
         distancias = distancias.flatten()
@@ -86,5 +86,7 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     # 🔹 Ordenar por relevancia
     resultados.sort(key=lambda x: x["distancia"])
     mejores = resultados[:cantidad_chunks]
+
     print(f"🔍 Se encontraron {len(mejores)} chunks relevantes.")
+    print(f"{resultados["contenido"]} ")
     return mejores
