@@ -22,10 +22,17 @@ os.makedirs(INDEX_DIR, exist_ok=True)
 
 
 def listar_chunks():
-    with engine.connect() as conn:
-        result = conn.execute(text("SELECT id,num_video,autor,fecha,titulo,tags FROM chunks"))
-        rows = [dict(row._mapping) for row in result]
-        print(json.dumps(rows, indent=2, ensure_ascii=False))
+    if not os.path.exists(METADATA_FILE):
+        return
+    with open(METADATA_FILE, "r",encoding="utf-8") as f:
+        metadata = json.load(f)
+    videos = metadata.get("videos",[])
+    if not videos:
+        print("No hay videos")
+        return
+    print("\n📹 Lista de videos:\n")
+    for vid in videos:
+        print(f"- Video {vid['num_video']}: {vid['titulo']}")
 
 
 def dividir_en_chunks(texto, palabras_por_chunk):
@@ -139,15 +146,52 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido):
 
     print(f"✅ Metadata actualizada en {METADATA_FILE}")
 
-def eliminar(id:int):
-    with engine.connect() as conn:
-        result = conn.execute(text("DELETE FROM chunks WHERE id = :id RETURNING id"),{"id":id})
-        conn.commit()
-        deleted = result.fetchone()
-        if deleted:
-            print(f"🗑️ Persona con ID {id} eliminada correctamente.")
-        else:
-            print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
+# def eliminar(id:int):
+#     with engine.connect() as conn:
+#         result = conn.execute(text("DELETE FROM chunks WHERE id = :id RETURNING id"),{"id":id})
+#         conn.commit()
+#         deleted = result.fetchone()
+#         if deleted:
+#             print(f"🗑️ Persona con ID {id} eliminada correctamente.")
+#         else:
+#             print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
+
+def eliminar_video(num_video):
+   
+
+    # 1) Verificar metadata.json
+    if not os.path.exists(METADATA_FILE):
+        print("⚠️ No existe metadata.json, no hay nada que borrar.")
+        return
+
+    with open(METADATA_FILE, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+
+    videos = metadata.get("videos", [])
+
+    # Buscar si existe
+    video_existente = next((v for v in videos if v["num_video"] == num_video), None)
+
+    if not video_existente:
+        print(f"⚠️ No se encontró el video {num_video} en metadata.json.")
+        return
+
+    # 2) Borrar el archivo .index
+    index_path = os.path.join(INDEX_DIR, f"{num_video}.index")
+    if os.path.exists(index_path):
+        os.remove(index_path)
+        print(f"🗑️ Archivo index eliminado: {index_path}")
+    else:
+        print(f"⚠️ No se encontró el archivo index para el video {num_video}")
+
+    # 3) Quitar del metadata.json
+    metadata["videos"] = [v for v in videos if v["num_video"] != num_video]
+
+    with open(METADATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+    print(f"✅ Video {num_video} eliminado del metadata.json")
+
 
 
 if __name__ == "__main__":
