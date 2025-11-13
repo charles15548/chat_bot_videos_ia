@@ -14,7 +14,7 @@ load_dotenv()
 DATABASE_URL=os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 
-DATA_DIR = "data"
+DATA_DIR = "/opt/render/project/src/data"
 INDEX_DIR = os.path.join(DATA_DIR, "indices")
 METADATA_FILE = os.path.join(DATA_DIR, "metadata.json")
 os.makedirs(INDEX_DIR, exist_ok=True)

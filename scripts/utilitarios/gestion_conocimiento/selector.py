@@ -4,7 +4,7 @@ import numpy as np
 import faiss
 from scripts.utilitarios.embedding.embedding import generar_embedding
 
-DATA_DIR = "data"
+DATA_DIR = "/opt/render/project/src/data"
 INDEX_DIR = os.path.join(DATA_DIR, "indices")
 METADATA_FILE = os.path.join(DATA_DIR, "metadata.json")
 
