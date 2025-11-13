@@ -4,6 +4,7 @@ from scripts.utilitarios.embedding.embedding import generar_embedding  # Usa tu 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+
 load_dotenv()
 # Config DB
 VECTORES_CACHE = None
@@ -12,6 +13,7 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 
 def elegir_mejor_chunck(pregunta, cantidad_chunks):
+
 
     session = SessionLocal()
     
@@ -60,3 +62,13 @@ def elegir_mejor_chunck(pregunta, cantidad_chunks):
         return []
     finally:
         session.close()
+
+
+
+
+
+
+
+
+
+

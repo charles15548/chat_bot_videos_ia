@@ -21,18 +21,6 @@ class Persona(Base):
 
 
 
-
-class Chunks(Base):
-    __tablename__ = "chunks"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    num_video = Column(Text)
-    autor = Column(Text)
-    fecha = Column(Text)
-    titulo = Column(Text)
-    tags = Column(Text)
-    contenido = Column(Text)
-    embedding = Column(Vector(1536)) 
-
     
 
 
