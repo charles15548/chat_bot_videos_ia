@@ -56,51 +56,10 @@ def dividir_en_chunks(texto, palabras_por_chunk):
 def contar_tokens(texto):
     return len(texto.split())
 
-# def agregar(num_video, autor, fecha, titulo, tags, contenido):
-#     """
-#     Divide el contenido en chunks y crea un registro por cada uno,
-#     repitiendo los metadatos y generando su embedding.
-#     """
-#     contenido_completo = " ".join(map(str, [contenido, num_video, autor, fecha, titulo, tags]))
-#     chunks = dividir_en_chunks(contenido_completo, PALABRAS_POR_CHUNK)
-
-#     if chunks and contar_tokens(chunks[-1]) < 200:
-#         print(f"Ultimo chunk demasiado pequeño ({contar_tokens(chunks[-1])} tokens). No se guardará.")
-       
-#         chunks = chunks[:-1]
-#     print(f"Se generarán {len(chunks)} embeddings para este contenido.")
-
-#     with engine.begin() as conn:
-#         for idx, chunk in enumerate(chunks, start=1):
-#             chunk_limpio = limpiar_texto(chunk)
-#             if not chunk_limpio.strip():
-#                 print(f"Chunk {idx} vacio, se omite")
-#                 continue
-#             embedding = generar_embedding(chunk_limpio)
-#             emb = np.array(embedding, dtype=np.float32)
-
-#             query = text("""
-#                 INSERT INTO chunks (num_video, autor, fecha, titulo, tags, contenido, embedding)
-#                 VALUES (:num_video, :autor, :fecha, :titulo, :tags, :contenido, :embedding)
-#                 RETURNING id;
-#             """)
-
-#             result = conn.execute(query, {
-#                 "num_video": num_video,
-#                 "autor": autor,
-#                 "fecha": fecha,
-#                 "titulo": titulo,
-#                 "tags": tags,
-#                 "contenido": chunk,
-#                 "embedding": emb.tolist(),
-#             })
-#             new_id = result.fetchone()[0]
-#             print(f"✅ Chunk {idx} insertado con id {new_id}")
 
 
 def agregar(num_video, autor, fecha, titulo, tags, contenido):
-    contenido_completo = " ".join(map(str, [contenido, num_video, autor, fecha, titulo, tags]))
-    chunks = dividir_en_chunks(contenido_completo, PALABRAS_POR_CHUNK)
+    chunks = dividir_en_chunks(contenido, PALABRAS_POR_CHUNK)
 
     if chunks and contar_tokens(chunks[-1]) < 200:
         print(f"Último chunk demasiado pequeño ({contar_tokens(chunks[-1])} tokens). No se guardará.")
@@ -150,6 +109,48 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido):
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
     print(f"✅ Metadata actualizada en {METADATA_FILE}")
+
+# def agregar(num_video, autor, fecha, titulo, tags, contenido):
+#     """
+#     Divide el contenido en chunks y crea un registro por cada uno,
+#     repitiendo los metadatos y generando su embedding.
+#     """
+#     contenido_completo = " ".join(map(str, [contenido, num_video, autor, fecha, titulo, tags]))
+#     chunks = dividir_en_chunks(contenido_completo, PALABRAS_POR_CHUNK)
+
+#     if chunks and contar_tokens(chunks[-1]) < 200:
+#         print(f"Ultimo chunk demasiado pequeño ({contar_tokens(chunks[-1])} tokens). No se guardará.")
+       
+#         chunks = chunks[:-1]
+#     print(f"Se generarán {len(chunks)} embeddings para este contenido.")
+
+#     with engine.begin() as conn:
+#         for idx, chunk in enumerate(chunks, start=1):
+#             chunk_limpio = limpiar_texto(chunk)
+#             if not chunk_limpio.strip():
+#                 print(f"Chunk {idx} vacio, se omite")
+#                 continue
+#             embedding = generar_embedding(chunk_limpio)
+#             emb = np.array(embedding, dtype=np.float32)
+
+#             query = text("""
+#                 INSERT INTO chunks (num_video, autor, fecha, titulo, tags, contenido, embedding)
+#                 VALUES (:num_video, :autor, :fecha, :titulo, :tags, :contenido, :embedding)
+#                 RETURNING id;
+#             """)
+
+#             result = conn.execute(query, {
+#                 "num_video": num_video,
+#                 "autor": autor,
+#                 "fecha": fecha,
+#                 "titulo": titulo,
+#                 "tags": tags,
+#                 "contenido": chunk,
+#                 "embedding": emb.tolist(),
+#             })
+#             new_id = result.fetchone()[0]
+#             print(f"✅ Chunk {idx} insertado con id {new_id}")
+
 
 # def eliminar(id:int):
 #     with engine.connect() as conn:

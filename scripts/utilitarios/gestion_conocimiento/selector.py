@@ -9,93 +9,96 @@ INDEX_DIR = os.path.join(DATA_DIR, "indices")
 METADATA_FILE = os.path.join(DATA_DIR, "metadata.json")
 
 FAISS_CACHE = None
-META_CACHE = None
+GLOBAL_METADATA = None
+EMBED_MAP = []
 
 
 def cargar_todos_los_indices():
     """Carga todos los embeddings (.npy) y su metadata."""
-    print("📥 Cargando FAISS en memoria...")
-    print(f"📂 Ruta embeddings: {os.path.abspath(INDEX_DIR)}")
-    print(f"📂 Ruta metadata: {os.path.abspath(METADATA_FILE)}")
 
-    if not os.path.exists(INDEX_DIR):
-        raise ValueError(f"⚠️ No existe la carpeta {INDEX_DIR}")
+    global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
+    EMBED_MAP = []
+
+    print("📥 Reconstruyendo FAISS global...")
+
+    # Cargar metadata
+    if not os.path.exists(METADATA_FILE):
+        raise ValueError("⚠️ metadata.json no existe")
+    with open(METADATA_FILE, "r", encoding="utf-8") as f:
+        GLOBAL_METADATA = json.load(f)
+    todos_embeddings = []
+
 
     archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
+    archivo.sort()
+
     print("📂 Archivos encontrados en indices:", archivos)
 
-    if not archivos:
-        raise ValueError("⚠️ No hay embeddings en /data/indices")
-
-    indices = []
     for archivo in archivos:
         ruta = os.path.join(INDEX_DIR, archivo)
+        vid_id = archivo.replace(".npy","").replace(".index","")
+        video_data = next((v for v in GLOBAL_METADATA["videos"] if v["num_video"] == vid_id), None)
+        if not video_data:
+            print(f"⚠️ WARNING: no hay metadata para {vid_id}, se ignora")
+            continue
+        
         emb = np.load(ruta)
-        dim = emb.shape[1]
-        index = faiss.IndexFlatL2(dim)
-        index.add(emb)
-        indices.append(index)
-        print(f"✅ {archivo} cargado ({emb.shape[0]} vectores)")
+        todos_embeddings.append(emb)
 
-    if not os.path.exists(METADATA_FILE):
-        raise ValueError(f"⚠️ No se encontró {METADATA_FILE}")
+        for chunk_idx in range(emb.shape[0]):
+            EMBED_MAP.append({
+                "video":vid_id,
+                "chunk": chunk_idx
+            })
+    # Unir todos los embeddings en un solo array
+    if not todos_embeddings:
+        raise ValueError("⚠️ No hay embeddings en indices/")
 
-    with open(METADATA_FILE, "r", encoding="utf-8") as f:
-        metadata = json.load(f)
+    matriz = np.vstack(todos_embeddings)
+    print(f"📊 Total de embeddings cargados: {matriz.shape[0]}")
+    dim = matriz.shape[1]
+    index = faiss.IndexFlatL2(dim)
+    index.add(matriz)
+    FAISS_INDEX = index
+    print("✅ FAISS global listo")
 
-    print(f"✅ {len(indices)} índices cargados correctamente.")
-    return indices, metadata
 
 
 def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     """Busca los chunks más relevantes desde FAISS + metadata.json"""
-    global FAISS_CACHE, META_CACHE
+    global FAISS_CACHE, GLOBAL_METADATA, EMBED_MAP
 
-    if FAISS_CACHE is None or META_CACHE is None:
-        FAISS_CACHE, META_CACHE = cargar_todos_los_indices()
+    if FAISS_CACHE is None:
+        cargar_todos_los_indices()
+    # Crear embedding de la pregunta
+    vec = np.array(generar_embedding(pregunta), dtype=np.float32).reshape(1, -1)
 
-    #  Generar embedding de la pregunta
-    embedding = np.array(generar_embedding(pregunta), dtype=np.float32).reshape(1, -1)
+    # Buscar globalmente
+    distancias, ids = FAISS_INDEX.search(vec, cantidad_chunks)
+
+    distancias = distancias.flatten()
+    ids = ids.flatten()
 
     resultados = []
 
-    #  Iterar sobre cada índice y su metadata asociada
-    for idx, index in enumerate(FAISS_CACHE):
-        distancias, ids = index.search(embedding, cantidad_chunks)
-        distancias = distancias.flatten()
-        ids = ids.flatten()
+    for i, global_id in enumerate(ids):
+        m = EMBED_MAP[global_id]  # video + chunk
 
-        # Obtener video correspondiente
-        video_data = META_CACHE["videos"][idx]
-        chunks = video_data["chunks"]
+        # Encontrar datos del video
+        video_data = next(v for v in GLOBAL_METADATA["videos"] if v["num_video"] == m["video"])
+        chunk_data = video_data["chunks"][m["chunk"]]
 
-        for i, id_chunk in enumerate(ids):
-            if id_chunk < len(chunks):
-                chunk = chunks[id_chunk]
-                resultados.append({
-                    "num_video": video_data.get("num_video", ""),
-                    "autor": video_data.get("autor", ""),
-                    "fecha": video_data.get("fecha", ""),
-                    "titulo": video_data.get("titulo", ""),
-                    "tags": video_data.get("tags", ""),
-                    "contenido": chunk.get("contenido", ""),
-                    "distancia": float(distancias[i]),
-                    "fuente_indice": idx
-                })
+        resultados.append({
+            "num_video": video_data["num_video"],
+            "autor": video_data["autor"],
+            "fecha": video_data["fecha"],
+            "titulo": video_data["titulo"],
+            "tags": video_data["tags"],
+            "contenido": chunk_data["contenido"],
+            "distancia": float(distancias[i]),
+        })
 
-    # 🔹 Ordenar por relevancia
+    # Ordenar por relevancia
     resultados.sort(key=lambda x: x["distancia"])
-    mejores = resultados[:cantidad_chunks]
 
-    print(f"🔍 Se encontraron {len(mejores)} chunks relevantes.")
-    for r in mejores:
-        print(r["num_video"],r["titulo"],r["contenido"])
-        print(f"""
-        🎯 Chunk relevante
-        - Video: {r['num_video']}
-        - Título: {r['titulo']}
-        - Contenido: {r['contenido']}
-        -----------------------
-        """)
-
-    return mejores
+    return resultados
