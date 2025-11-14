@@ -106,8 +106,7 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
         print(f"""
         🎬 Video: {r['num_video']}
         🎙️ Título: {r['titulo']}
-        📏 Distancia: {r['distancia']}
-        🧩 Texto: {r['contenido'][:150]}...
+        🧩 Texto: {r['contenido'][:100]}...
         """)
 
 

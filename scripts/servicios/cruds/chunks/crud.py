@@ -59,7 +59,9 @@ def contar_tokens(texto):
 
 
 def agregar(num_video, autor, fecha, titulo, tags, contenido):
-    chunks = dividir_en_chunks(contenido, PALABRAS_POR_CHUNK)
+    contenido_completo = " ".join(map(str, [contenido, num_video, autor, fecha, titulo, tags]))
+
+    chunks = dividir_en_chunks(contenido_completo, PALABRAS_POR_CHUNK)
 
     if chunks and contar_tokens(chunks[-1]) < 200:
         print(f"Último chunk demasiado pequeño ({contar_tokens(chunks[-1])} tokens). No se guardará.")
@@ -183,7 +185,7 @@ def eliminar_video(num_video):
         return
 
     # 2) Borrar el archivo .index
-    index_path = os.path.join(INDEX_DIR, f"{num_video}.index")
+    index_path = os.path.join(INDEX_DIR, f"{num_video}.index.npy")
     if os.path.exists(index_path):
         os.remove(index_path)
         print(f"🗑️ Archivo index eliminado: {index_path}")
