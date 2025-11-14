@@ -65,15 +65,20 @@ client = OpenAI()
 
 #     return event_generator
 
+def get_ultimo_mensaje_bot(historial):
+    for msg in reversed(historial):
+        if msg.rol == "bot":
+            return msg.contenido
+    return ""
 
 
 def generar_respuesta_stream(pregunta_usuario, historial):
-    ultimo_mensaje_bot = None
-    if historial and historial[-1].rol == "bot":
-       ultimo_mensaje_bot = historial[-1].contenido
-    else:
-        ultimo_mensaje_bot = ""
-    print("Ultimo mensaje del bot: ",ultimo_mensaje_bot)
+    ultimo_mensaje_bot = get_ultimo_mensaje_bot(historial)
+
+    
+
+
+    print(f"Ultimo mensaje del bot: {ultimo_mensaje_bot}")
     chunks = elegir_mejor_chunck(pregunta_usuario,ultimo_mensaje_bot, CHUNCKS_POR_DOCUMENTO)
     videos_db = listar_chunks()
     if not chunks:
