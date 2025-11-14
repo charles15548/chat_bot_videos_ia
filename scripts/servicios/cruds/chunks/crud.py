@@ -34,7 +34,7 @@ def listar_chunks():
     lista_formateada = []
     
     for vid in videos:
-        texto = f"-Video: {vid["num_video"]} -Titulo: {vid['titulo']} -Expositor {vid['autor']}"
+        texto = f"-Video: {vid["num_video"]} -Titulo: {vid['titulo']} -Expositor {vid['autor']} -Fecha {vid['fecha']}"
         lista_formateada.append(texto)
     return lista_formateada
     
