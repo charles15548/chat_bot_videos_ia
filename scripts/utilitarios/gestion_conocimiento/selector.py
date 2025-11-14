@@ -64,14 +64,15 @@ def cargar_todos_los_indices():
 
 
 
-def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
+def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
     """Busca los chunks más relevantes desde FAISS + metadata.json"""
     global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
 
     if FAISS_INDEX is None:
         cargar_todos_los_indices()
+    consulta_extendida = f"Bod Dijo: {ultimo_bot}\n Usuario pregunta: {pregunta}"
     # Crear embedding de la pregunta
-    vec = np.array(generar_embedding(pregunta), dtype=np.float32).reshape(1, -1)
+    vec = np.array(generar_embedding(consulta_extendida), dtype=np.float32).reshape(1, -1)
 
     # Buscar globalmente
     distancias, ids = FAISS_INDEX.search(vec, cantidad_chunks)
@@ -106,7 +107,7 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
         print(f"""
         🎬 Video: {r['num_video']}
         🎙️ Título: {r['titulo']}
-        🧩 Texto: {r['contenido'][:100]}...
+        🧩 Texto: {r['contenido'][:150]}...
         """)
 
 

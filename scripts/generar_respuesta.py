@@ -68,7 +68,13 @@ client = OpenAI()
 
 
 def generar_respuesta_stream(pregunta_usuario, historial):
-    chunks = elegir_mejor_chunck(pregunta_usuario, CHUNCKS_POR_DOCUMENTO)
+    ultimo_mensaje_bot = None
+    if historial and historial[-1].rol == "assistant":
+       ultimo_mensaje_bot = historial[-1].contenido
+    else:
+        ultimo_mensaje_bot = ""
+    print("Ultimo mensaje del bot: ",ultimo_mensaje_bot)
+    chunks = elegir_mejor_chunck(pregunta_usuario,ultimo_mensaje_bot, CHUNCKS_POR_DOCUMENTO)
     videos_db = listar_chunks()
     if not chunks:
         mensajes = [{
