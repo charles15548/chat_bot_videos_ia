@@ -101,4 +101,14 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     # Ordenar por relevancia
     resultados.sort(key=lambda x: x["distancia"])
 
+    print("🎯 --- TOP CHUNKS ORDENADOS ---")
+    for r in resultados:
+        print(f"""
+        🎬 Video: {r['num_video']}
+        🎙️ Título: {r['titulo']}
+        📏 Distancia: {r['distancia']}
+        🧩 Texto: {r['contenido'][:150]}...
+        """)
+
+
     return resultados
