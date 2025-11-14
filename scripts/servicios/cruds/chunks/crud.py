@@ -32,11 +32,10 @@ def listar_chunks():
         print("No hay videos")
         return []
     lista_formateada = []
-    print("\n📹 Lista de videos:\n")
+    
     for vid in videos:
         texto = f"-Video {vid["num_video"]}: {vid['titulo']}"
         lista_formateada.append(texto)
-        print(texto)
     return lista_formateada
     
 

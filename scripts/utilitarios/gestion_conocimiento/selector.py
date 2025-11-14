@@ -89,6 +89,13 @@ def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
 
     print(f"🔍 Se encontraron {len(mejores)} chunks relevantes.")
     for r in mejores:
-        print(r["contenido"])
+        print(r["num_video"],r["titulo"],r["contenido"])
+        print(f"""
+        🎯 Chunk relevante
+        - Video: {r['num_video']}
+        - Título: {r['titulo']}
+        - Contenido: {r['contenido']}
+        -----------------------
+        """)
 
     return mejores

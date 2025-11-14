@@ -87,6 +87,10 @@ def generar_respuesta_stream(pregunta_usuario, historial):
             "role": "system",
             "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos en una lista numerada): {videos_texto}"
         }]
+        
+        print("\n📹 Lista de videos:\n")
+        print(f"\n {videos_texto}")
+        
 
     mensajes.extend({
         "role": "user" if msg.rol == "user" else "assistant",

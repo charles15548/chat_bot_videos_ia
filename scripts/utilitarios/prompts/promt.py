@@ -16,5 +16,5 @@ Solo cuando cites información, agrega al final una sección de **Referencias** 
 - Título: [Título completo del video] 
 - De forma clara y organizada
 
-Si no hay información suficiente, indícalo claramente y tampoco agregues las referencias.
+Si no hay información clara, indícalo claramente y tampoco agregues las referencias ni contenido extra.
 """
