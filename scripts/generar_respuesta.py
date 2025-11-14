@@ -69,7 +69,7 @@ client = OpenAI()
 
 def generar_respuesta_stream(pregunta_usuario, historial):
     ultimo_mensaje_bot = None
-    if historial and historial[-1].rol == "assistant":
+    if historial and historial[-1].rol == "bot":
        ultimo_mensaje_bot = historial[-1].contenido
     else:
         ultimo_mensaje_bot = ""
