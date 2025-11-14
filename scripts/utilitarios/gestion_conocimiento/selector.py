@@ -8,7 +8,7 @@ DATA_DIR = "/opt/render/project/src/data"
 INDEX_DIR = os.path.join(DATA_DIR, "indices")
 METADATA_FILE = os.path.join(DATA_DIR, "metadata.json")
 
-FAISS_CACHE = None
+FAISS_INDEX = None
 GLOBAL_METADATA = None
 EMBED_MAP = []
 
@@ -30,7 +30,7 @@ def cargar_todos_los_indices():
 
 
     archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
-    archivo.sort()
+    archivos.sort()
 
     print("📂 Archivos encontrados en indices:", archivos)
 
@@ -66,9 +66,9 @@ def cargar_todos_los_indices():
 
 def elegir_mejor_chunck(pregunta: str, cantidad_chunks: int):
     """Busca los chunks más relevantes desde FAISS + metadata.json"""
-    global FAISS_CACHE, GLOBAL_METADATA, EMBED_MAP
+    global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
 
-    if FAISS_CACHE is None:
+    if FAISS_INDEX is None:
         cargar_todos_los_indices()
     # Crear embedding de la pregunta
     vec = np.array(generar_embedding(pregunta), dtype=np.float32).reshape(1, -1)
