@@ -14,7 +14,7 @@ Solo cuando cites información, agrega al final una sección de **Referencias** 
 - Expositor: [Nombre del expositor o autor]
 - Fecha: [Fecha]
 - Título: [Título completo del video] 
-- De forma clara y organizada
+De forma clara y organizada
 
 Si no hay información clara, indícalo claramente y tampoco agregues las referencias ni contenido extra.
 """
