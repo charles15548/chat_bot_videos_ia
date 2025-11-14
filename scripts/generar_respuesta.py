@@ -6,6 +6,7 @@ import os
 from scripts.utilitarios.gestion_conocimiento.selector import elegir_mejor_chunck
 from scripts.utilitarios.prompts.promt import prompt_base
 from scripts.editar_variables import MODELO,CHUNCKS_POR_DOCUMENTO
+from scripts.servicios.cruds.chunks.crud import listar_chunks
 
 import re
 # Cargar clave desde .env
@@ -68,7 +69,7 @@ client = OpenAI()
 
 def generar_respuesta_stream(pregunta_usuario, historial):
     chunks = elegir_mejor_chunck(pregunta_usuario, CHUNCKS_POR_DOCUMENTO)
-
+    videos_db = listar_chunks()
     if not chunks:
         mensajes = [{
             "role": "system",
@@ -79,10 +80,12 @@ def generar_respuesta_stream(pregunta_usuario, historial):
             f"""Num° Video:{c['num_video']} \nAutor:{c['autor']} \nFecha:{c['fecha']} \nTitulo:{c['titulo']} \nContenido:{c['contenido']}"""
             for c in chunks
         ])
+        
+        videos_texto = "\n".join(videos_db) if videos_db else "No hay videos registrados"
         prompt = prompt_base()
         mensajes = [{
             "role": "system",
-            "content": prompt + f"\n Información: \n{contexto}"
+            "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos en una lista numerada): {videos_texto}"
         }]
 
     mensajes.extend({

@@ -23,16 +23,22 @@ os.makedirs(INDEX_DIR, exist_ok=True)
 
 def listar_chunks():
     if not os.path.exists(METADATA_FILE):
-        return
+        return []
+    
     with open(METADATA_FILE, "r",encoding="utf-8") as f:
         metadata = json.load(f)
     videos = metadata.get("videos",[])
     if not videos:
         print("No hay videos")
-        return
+        return []
+    lista_formateada = []
     print("\n📹 Lista de videos:\n")
     for vid in videos:
-        print(f"- Video {vid['num_video']}: {vid['titulo']}")
+        texto = f"-Video {vid["num_video"]}: {vid['titulo']}"
+        lista_formateada.append(texto)
+        print(texto)
+    return lista_formateada
+    
 
 
 def dividir_en_chunks(texto, palabras_por_chunk):
@@ -195,6 +201,4 @@ def eliminar_video(num_video):
 
 
 if __name__ == "__main__":
-    
-    
     listar_chunks()
