@@ -93,10 +93,11 @@ def generar_respuesta_stream(pregunta_usuario, historial):
         ])
         
         videos_texto = "\n".join(videos_db) if videos_db else "No hay videos registrados"
+        cantidad_de_videos = len(videos_db)
         prompt = prompt_base()
         mensajes = [{
             "role": "system",
-            "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos de forma numerada):\n {videos_texto}"
+            "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos de forma numerada):\n {videos_texto} \n Total videos: {cantidad_de_videos} "
         }]
         
         print("\n📹 Lista de videos:\n")
