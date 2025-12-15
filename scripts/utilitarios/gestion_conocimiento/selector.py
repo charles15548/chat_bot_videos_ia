@@ -3,6 +3,7 @@ import json
 import numpy as np
 import faiss
 from scripts.utilitarios.embedding.embedding import generar_embedding
+from scripts.utilitarios.gestion_conocimiento.buscarPorNumero import capa_filtro_numero_video
 
 DATA_DIR = "/opt/render/project/src/data"
 INDEX_DIR = os.path.join(DATA_DIR, "indices")
@@ -70,7 +71,12 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
 
     if FAISS_INDEX is None:
         cargar_todos_los_indices()
-    consulta_extendida = f"Bod Dijo: {ultimo_bot}\n Usuario pregunta: {pregunta}"
+
+    # AQUI SE HARA LA CAPA FILTRO N° de video
+    nueva_consulta_usuario = capa_filtro_numero_video(pregunta)
+    consulta_extendida = f"Bod Dijo: {ultimo_bot}\n Usuario pregunta: {nueva_consulta_usuario}"
+
+    
     # Crear embedding de la pregunta
     vec = np.array(generar_embedding(consulta_extendida), dtype=np.float32).reshape(1, -1)
 
