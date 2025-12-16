@@ -131,10 +131,7 @@ async def subir_archivo(
 async def listar_videos():
     return lista_videos()
 
-from fastapi import FastAPI, Form
-from fastapi.responses import JSONResponse
 
-app = FastAPI()
 
 @app.post("/editar_video")
 async def editar_video_endpoint(
