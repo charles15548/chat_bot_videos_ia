@@ -74,6 +74,9 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
 
     # AQUI SE HARA LA CAPA FILTRO N° de video
     nueva_consulta_usuario = capa_filtro_numero_video(pregunta)
+    # -- print de nueva consulta capa filtro
+    print(nueva_consulta_usuario)
+    
     consulta_extendida = f"Bod Dijo: {ultimo_bot}\n Usuario pregunta: {nueva_consulta_usuario}"
 
     
