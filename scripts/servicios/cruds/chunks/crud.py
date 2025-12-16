@@ -204,6 +204,26 @@ def eliminar_video(num_video):
     print(f"✅ Video {num_video} eliminado del metadata.json")
 
 
+def migrar_agregar_link_vacio():
+    if not os.path.exists(METADATA_FILE):
+        print("no existe metadata")
+        return
+    with open(METADATA_FILE, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+    cambios = False
+    
+    for video in metadata.get("videos",[]):
+        if "link" not in video:
+            video["link"] = ""
+            cambios = True
+        
+    if cambios:
+        with open(METADATA_FILE,"w",encoding="utf-8") as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+        print("Migración completada: campo link agregado")
+    else:
+        print("No fue necesario migrar nada")
+
 
 if __name__ == "__main__":
     listar_chunks()
