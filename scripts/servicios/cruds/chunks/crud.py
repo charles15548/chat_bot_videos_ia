@@ -198,7 +198,7 @@ def editar_video(num_video, autor, fecha, titulo, tags,link):
     actualizado = False
 
     for video in metadata.get("videos", []):
-        if str(video.get("num_video")) == str(num_video):
+        if video.get("num_video") == num_video:
             video["autor"] = autor
             video["fecha"] = fecha
             video["titulo"] = titulo

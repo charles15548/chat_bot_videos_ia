@@ -132,7 +132,7 @@ async def listar_videos():
     return lista_videos()
 
 
-
+import scripts.utilitarios.gestion_conocimiento.selector as selector
 @app.post("/editar_video")
 async def editar_video_endpoint(
     num_video: str = Form(...),
@@ -151,6 +151,10 @@ async def editar_video_endpoint(
             tags=tags,
             link=link
         )
+        # 🔥 LIMPIAR CACHE
+        
+        selector.FAISS_INDEX = None
+        selector.GLOBAL_METADATA = None
 
         return JSONResponse(
             content={"mensaje": "✅ Video actualizado correctamente"},
