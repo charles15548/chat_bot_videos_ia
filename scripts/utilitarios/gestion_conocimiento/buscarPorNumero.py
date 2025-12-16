@@ -19,7 +19,7 @@ Modifica la consulta del usuario si el pedido del video es ambiguo.
 Si el usuario pide un video solo por número, agrega después del número el título correspondiente.
 Ejemplo:
 usuario: dame un resumen del video 5
-corrección: dame un resumen del video 5 - La adquisición de nuevos conocimientos
+corrección: dame un resumen del video 5 - El Mundo en 2021
 
 No agregues comentarios ni explicaciones.
 Solo devuelve la consulta corregida.
