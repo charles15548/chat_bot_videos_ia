@@ -32,7 +32,7 @@ Consulta del usuario:
 """
 
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model="gpt-4.1-nano",
         input=prompt
     )
 

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from scripts.generar_respuesta import generar_respuesta_stream
 from scripts.servicios.cruds.personas.crud import acceso
-from scripts.servicios.cruds.chunks.crud import agregar
+from scripts.servicios.cruds.chunks.crud import agregar, lista_videos
 import uvicorn
 import markdown2
 from bs4 import BeautifulSoup
@@ -125,6 +125,11 @@ async def subir_archivo(
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# Lista de videos existente
+@app.get("/lista_videos")
+async def listar_videos():
+    return lista_videos()
 
 
 # Ejecutar: uvicorn app:app --reload

@@ -117,6 +117,8 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
         print(f"""
         🎬 Video: {r['num_video']}
         🎙️ Título: {r['titulo']}
+            Auto: {r['autor']}
+            Link: {r['link']}
         🧩 Texto: {r['contenido'][:150]}...
         """)
 

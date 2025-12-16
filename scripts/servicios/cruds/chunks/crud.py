@@ -37,7 +37,28 @@ def listar_chunks():
         texto = f"-Video: {vid["num_video"]} -Titulo: {vid['titulo']} -Expositor: {vid['autor']} -Fecha: {vid['fecha']}"
         lista_formateada.append(texto)
     return lista_formateada
-    
+
+# Usamos esta funcion para listar los videos en el front
+def lista_videos():
+    if not os.path.exists(METADATA_FILE):
+        return []
+    with open(METADATA_FILE, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+
+    videos = metadata.get("videos",[])
+    if not videos:
+        return []
+    resultado = []
+    for vid in videos:
+        resultado.append({
+            "num_video": vid.get("num_video",""),
+            "titulo": vid.get("titulo",""),
+            "autor": vid.get("autor",""),
+            "fecha": vid.get("fecha",""),
+            "tags": vid.get("tags",""),
+            "link": vid.get("link", "")
+        })
+    return resultado
 
 
 def dividir_en_chunks(texto, palabras_por_chunk):
@@ -115,6 +136,9 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido,link):
 
     print(f"✅ Metadata actualizada en {METADATA_FILE}")
 
+
+
+
 # def agregar(num_video, autor, fecha, titulo, tags, contenido):
 #     """
 #     Divide el contenido en chunks y crea un registro por cada uno,
@@ -166,6 +190,26 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido,link):
 #             print(f"🗑️ Persona con ID {id} eliminada correctamente.")
 #         else:
 #             print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
+
+def editar_video(num_video, autor, fecha, titulo, tags, contenido,link):
+    with open(METADATA_FILE,"r",encoding="utf-8") as f:
+        metadata = json.load(f)
+
+    for video in metadata["videos"]:
+        if video["num_video"] == num_video:
+            video["autor"] = autor
+            video["fecha"] = fecha
+            video["titulo"] = titulo
+            video["tags"] = tags
+            video["link"] = link
+        
+            break
+    with open(METADATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+    print("Video Actualizado")
+
+    
 
 def eliminar_video(num_video):
    
@@ -227,3 +271,5 @@ def migrar_agregar_link_vacio():
 
 if __name__ == "__main__":
     listar_chunks()
+
+    
