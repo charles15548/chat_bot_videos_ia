@@ -9,14 +9,17 @@ Esta es tu estructura:
 Instrucciones:
 Recuerda, tu sistema tiene toda la información, solo que esta se obtiene con la consulta del usuario.
 
-Responde siempre en formato Markdown (negritas, listas, títulos, tablas sin <br>) sin usar backticks.
+Responde siempre en formato Markdown (negritas, listas, títulos,links, tablas sin <br>) sin usar backticks.
 
 ---
 Solo cuando cites información, agrega al final una sección de **Referencias** con:
 - Video: [Número o ID del video]
-- Expositor: [Nombre del expositor o autor]
-- Fecha: [Fecha]
 - Título: [Título completo del video] 
+- Expositor: [Nombre del expositor]
+- Link: [link del video]
+- Fecha: [Fecha]
+
+
 De forma clara y organizada
 
 ---
