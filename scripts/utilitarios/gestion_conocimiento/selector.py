@@ -104,7 +104,7 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
             "fecha": video_data["fecha"],
             "titulo": video_data["titulo"],
             "tags": video_data["tags"],
-            "link": video_data["link"],
+            "link": video_data.get("link", ""),
             "contenido": chunk_data["contenido"],
             "distancia": float(distancias[i]),
         })

@@ -188,7 +188,7 @@ def eliminar_video(num_video):
         return
 
     # 2) Borrar el archivo .index
-    index_path = os.path.join(INDEX_DIR, f"{num_video}.index")
+    index_path = os.path.join(INDEX_DIR, f"{num_video}.index.npy")
     if os.path.exists(index_path):
         os.remove(index_path)
         print(f"🗑️ Archivo index eliminado: {index_path}")
