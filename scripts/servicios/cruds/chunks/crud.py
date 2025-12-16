@@ -195,15 +195,20 @@ def editar_video(num_video, autor, fecha, titulo, tags,link):
     with open(METADATA_FILE,"r",encoding="utf-8") as f:
         metadata = json.load(f)
 
-    for video in metadata["videos"]:
-        if video["num_video"] == num_video:
+    actualizado = False
+
+    for video in metadata.get("videos", []):
+        if str(video.get("num_video")) == str(num_video):
             video["autor"] = autor
             video["fecha"] = fecha
             video["titulo"] = titulo
             video["tags"] = tags
             video["link"] = link
-        
+            actualizado = True
             break
+    if not actualizado:
+        raise Exception(f"No se encontró el video {num_video}")
+    
     with open(METADATA_FILE, "w", encoding="utf-8") as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
