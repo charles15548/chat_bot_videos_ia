@@ -135,7 +135,7 @@ async def listar_videos():
 
 @app.post("/editar_video")
 async def editar_video_endpoint(
-    num_video: int = Form(...),
+    num_video: str = Form(...),
     autor: str = Form(...),
     fecha: str = Form(...),
     titulo: str = Form(...),
