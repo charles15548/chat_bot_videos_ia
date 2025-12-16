@@ -115,10 +115,11 @@ async def subir_archivo(
     titulo: str = Form(...),
     tags: str = Form(...),
     contenido: str = Form(...),
+    link: str = Form(...),
 ):
     try:
         
-        agregar(num_video, autor, fecha, titulo,tags,contenido)
+        agregar(num_video, autor, fecha, titulo,tags,contenido,link)
     except Exception as e:
         import traceback
         traceback.print_exc()

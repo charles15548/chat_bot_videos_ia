@@ -58,7 +58,7 @@ def contar_tokens(texto):
 
 
 
-def agregar(num_video, autor, fecha, titulo, tags, contenido):
+def agregar(num_video, autor, fecha, titulo, tags, contenido,link):
     contenido_completo = " ".join(map(str, [contenido, num_video, autor, fecha, titulo, tags]))
 
     chunks = dividir_en_chunks(contenido_completo, PALABRAS_POR_CHUNK)
@@ -85,6 +85,8 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido):
             "embedding_index": idx - 1
         })
 
+    # Creamos un archivo .index
+
     index_path = os.path.join(INDEX_DIR, f"{num_video}.index")
     np.save(index_path, np.vstack(embeddings))
     print(f"✅ Embeddings guardados en {index_path}")
@@ -101,6 +103,7 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido):
         "fecha": fecha,
         "titulo": titulo,
         "tags": tags,
+        "link": link,
         "chunks": chunk_data
     }
 
@@ -185,7 +188,7 @@ def eliminar_video(num_video):
         return
 
     # 2) Borrar el archivo .index
-    index_path = os.path.join(INDEX_DIR, f"{num_video}.index.npy")
+    index_path = os.path.join(INDEX_DIR, f"{num_video}.index")
     if os.path.exists(index_path):
         os.remove(index_path)
         print(f"🗑️ Archivo index eliminado: {index_path}")
