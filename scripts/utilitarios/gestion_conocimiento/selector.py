@@ -76,7 +76,7 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
     nueva_consulta_usuario = capa_filtro_numero_video(pregunta)
     # -- print de nueva consulta capa filtro
     print(nueva_consulta_usuario)
-    
+
     consulta_extendida = f"Bod Dijo: {ultimo_bot}\n Usuario pregunta: {nueva_consulta_usuario}"
 
     
@@ -104,6 +104,7 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
             "fecha": video_data["fecha"],
             "titulo": video_data["titulo"],
             "tags": video_data["tags"],
+            "link": video_data["link"],
             "contenido": chunk_data["contenido"],
             "distancia": float(distancias[i]),
         })

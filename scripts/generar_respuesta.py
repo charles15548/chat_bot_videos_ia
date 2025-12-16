@@ -88,7 +88,7 @@ def generar_respuesta_stream(pregunta_usuario, historial):
         }]
     else:
         contexto = "\n\n".join([
-            f"""Num° Video:{c['num_video']} \nAutor:{c['autor']} \nFecha:{c['fecha']} \nTitulo:{c['titulo']} \nContenido:{c['contenido']}"""
+            f"""Num° Video:{c['num_video']} \nTitulo:{c['titulo']} \nAutor:{c['autor']} \nFecha:{c['fecha']} \nlink: {c['link']} \nContenido:{c['contenido']}"""
             for c in chunks
         ])
         
