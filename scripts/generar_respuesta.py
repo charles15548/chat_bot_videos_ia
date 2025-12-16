@@ -97,11 +97,12 @@ def generar_respuesta_stream(pregunta_usuario, historial):
         prompt = prompt_base()
         mensajes = [{
             "role": "system",
-            "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos de forma numerada):\n {videos_texto} \n Total videos: {cantidad_de_videos} "
+            "content": prompt + f"\n Información: \n{contexto} \n Videos disponibles actualmente en db(de estos videos sacas fracmentos de informacion en cada consulta, mostrarlos de forma numerada):\n {videos_texto} \n Cantidad Total videos en BD: {cantidad_de_videos} "
         }]
         
         print("\n📹 Lista de videos:\n")
         print(f"\n {videos_texto}")
+        print(f"Cantidad de videos: {cantidad_de_videos}")
         
 
     mensajes.extend({
