@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from scripts.generar_respuesta import generar_respuesta_stream
 from scripts.servicios.cruds.personas.crud import acceso
-from scripts.servicios.cruds.chunks.crud import agregar, lista_videos
+from scripts.servicios.cruds.chunks.crud import agregar, lista_videos, editar_video
 import uvicorn
 import markdown2
 from bs4 import BeautifulSoup
@@ -130,6 +130,42 @@ async def subir_archivo(
 @app.get("/lista_videos")
 async def listar_videos():
     return lista_videos()
+
+from fastapi import FastAPI, Form
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.post("/editar_video")
+async def editar_video_endpoint(
+    num_video: int = Form(...),
+    autor: str = Form(...),
+    fecha: str = Form(...),
+    titulo: str = Form(...),
+    tags: str = Form(...),
+    link: str = Form(...)
+):
+    try:
+        editar_video(
+            num_video=num_video,
+            autor=autor,
+            fecha=fecha,
+            titulo=titulo,
+            tags=tags,
+            link=link
+        )
+
+        return JSONResponse(
+            content={"mensaje": "✅ Video actualizado correctamente"},
+            status_code=200
+        )
+
+    except Exception as e:
+        return JSONResponse(
+            content={"mensaje": f"❌ Error al actualizar el video: {str(e)}"},
+            status_code=500
+        )
+
 
 
 # Ejecutar: uvicorn app:app --reload

@@ -191,7 +191,7 @@ def agregar(num_video, autor, fecha, titulo, tags, contenido,link):
 #         else:
 #             print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
 
-def editar_video(num_video, autor, fecha, titulo, tags, contenido,link):
+def editar_video(num_video, autor, fecha, titulo, tags,link):
     with open(METADATA_FILE,"r",encoding="utf-8") as f:
         metadata = json.load(f)
 
