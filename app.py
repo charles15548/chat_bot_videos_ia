@@ -127,7 +127,7 @@ async def subir_archivo(
 
 
 # Lista de videos existente
-@app.get("/lista_videos")
+@app.get("/get_lista_videos")
 async def listar_videos():
     return lista_videos()
 
