@@ -87,7 +87,7 @@ USER = os.path.join(DATA_DIR,"users.json")
 #             return {"id": 0, "message":"No se encontro usuario"}
  
 
-def agregar(nombre, correo, contrasena):
+def agregar(nombre, correo, contrasena,tipo):
     os.makedirs(DATA_DIR, exist_ok=True)
 
     # Leer si ya existe
@@ -104,7 +104,8 @@ def agregar(nombre, correo, contrasena):
         "id": nuevo_id,
         "nombre": nombre,
         "correo": correo,
-        "contrasena": contrasena
+        "contrasena": contrasena,
+        "tipo" : tipo
     }
 
     data["usuarios"].append(nuevo_usuario)

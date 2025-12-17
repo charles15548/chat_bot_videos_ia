@@ -151,7 +151,6 @@ async def editar_video_endpoint(
             tags=tags,
             link=link
         )
-        
         # 🔥 LIMPIAR CACHE
         selector.FAISS_INDEX = None
         selector.GLOBAL_METADATA = None
