@@ -13,7 +13,7 @@ ALGORITHM = "HS256"
 engine = create_engine(DATABASE_URL)
 
 
-DATA_DIR ="data"
+DATA_DIR ="/opt/render/proyect/src/data"
 USER = os.path.join(DATA_DIR,"users.json")
 
 
@@ -26,16 +26,6 @@ USER = os.path.join(DATA_DIR,"users.json")
 #         print(rows)
 #         return [{"id": r.id, "nombre": r.nombre,"correo": r.correo} for r in rows]
 
-
-# def eliminar(id: int):
-#     with engine.connect() as conn:
-#         result = conn.execute(text("DELETE FROM persona WHERE id = :id RETURNING id"), {"id": id})
-#         conn.commit()
-#         deleted = result.fetchone()
-#         if deleted:
-#             print(f"🗑️ Persona con ID {id} eliminada correctamente.")
-#         else:
-#             print(f"⚠️ No se encontró ninguna Archivo con ID {id}.")
 
 
 # def agrega(nombre, correo, contrasena):
@@ -172,12 +162,5 @@ def acceso(correo,contrasena):
 
 
 
-from datetime import date
-if __name__ == "__main__":
-     
-    agregar(
-    nombre="admin",
-    correo="admin@gmail.com",
-    contrasena="admin",
-    )
+
     
