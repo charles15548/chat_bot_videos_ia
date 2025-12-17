@@ -64,16 +64,92 @@ def cargar_todos_los_indices():
     print("✅ FAISS global listo")
 
 
+def cargar_todos_los_indices(lista_indices=None):
+    """
+    Carga embeddings (.npy).  
+    Si lista_indices existe → solo carga los que se parecen al num_video.
+    """
+
+    global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
+    EMBED_MAP = []
+
+    print("📥 Reconstruyendo FAISS...")
+
+    # Cargar metadata
+    if not os.path.exists(METADATA_FILE):
+        raise ValueError("⚠️ metadata.json no existe")
+
+    with open(METADATA_FILE, "r", encoding="utf-8") as f:
+        GLOBAL_METADATA = json.load(f)
+
+    todos_embeddings = []
+
+    # --- FILTRO DE ARCHIVOS ---
+    if lista_indices:
+        #pasar a string
+        lista = [str(x) for x in lista_indices]
+
+        archivos = [
+            f for f in os.listdir(INDEX_DIR)
+            if f.endswith(".npy")
+            and any(
+                f.replace(".npy", "") in i or i in f.replace(".npy", "")
+                for i in lista
+            )
+        ]
+    else:
+        archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
+
+    archivos.sort()
+    print("📂 Archivos usados:", archivos)
+
+    # --- CARGA DE EMBEDDINGS ---
+    for archivo in archivos:
+        ruta = os.path.join(INDEX_DIR, archivo)
+        vid_id = archivo.replace(".npy", "").replace(".index","")
+
+        video_data = next(
+            (v for v in GLOBAL_METADATA["videos"] if v["num_video"] == vid_id),
+            None
+        )
+
+        if not video_data:
+            print(f"⚠️ WARNING: no hay metadata para {vid_id}, se ignora")
+            continue
+
+        emb = np.load(ruta)
+        todos_embeddings.append(emb)
+
+        for chunk_idx in range(emb.shape[0]):
+            EMBED_MAP.append({
+                "video": vid_id,
+                "chunk": chunk_idx
+            })
+
+    if not todos_embeddings:
+        raise ValueError("⚠️ No hay embeddings para construir FAISS")
+
+    matriz = np.vstack(todos_embeddings)
+    print(f"📊 Total de embeddings cargados: {matriz.shape[0]}")
+
+    dim = matriz.shape[1]
+    index = faiss.IndexFlatL2(dim)
+    index.add(matriz)
+
+    FAISS_INDEX = index
+    print("✅ FAISS listo")
+
 
 def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
     """Busca los chunks más relevantes desde FAISS + metadata.json"""
     global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
 
-    if FAISS_INDEX is None:
-        cargar_todos_los_indices()
-
     # AQUI SE HARA LA CAPA FILTRO N° de video
-    nueva_consulta_usuario = capa_filtro_numero_video(pregunta)
+    nueva_consulta_usuario,lista_indices = capa_filtro_numero_video(pregunta)
+    if FAISS_INDEX is None:
+        cargar_todos_los_indices(lista_indices)
+
+    
     # -- print de nueva consulta capa filtro
     print(nueva_consulta_usuario)
 
