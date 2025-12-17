@@ -135,6 +135,7 @@ def cargar_todos_los_indices_nuevo(lista_indices=None):
 
     global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
     EMBED_MAP = []
+    FAISS_INDEX = None
 
     print("📥 Reconstruyendo FAISS...")
 
@@ -149,17 +150,20 @@ def cargar_todos_los_indices_nuevo(lista_indices=None):
 
     # --- FILTRO DE ARCHIVOS ---
     if lista_indices:
-        #pasar a string
         lista = [str(x) for x in lista_indices]
 
-        archivos = [
-            f for f in os.listdir(INDEX_DIR)
-            if f.endswith(".npy")
-            and any(
-                f.replace(".npy", "") in i or i in f.replace(".npy", "")
+        archivos = []
+        for f in os.listdir(INDEX_DIR):
+            if not f.endswith(".npy"):
+                continue
+
+            nombre = f.replace(".npy", "").replace(".index", "")
+
+            if any(
+                nombre == i or nombre.lstrip("0") == i.lstrip("0")
                 for i in lista
-            )
-        ]
+            ):
+                archivos.append(f)
     else:
         archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
 
@@ -215,8 +219,11 @@ def elegir_mejor_chunck(pregunta: str,ultimo_bot: str, cantidad_chunks: int):
 
     # AQUI SE HARA LA CAPA FILTRO N° de video
     nueva_consulta_usuario,lista_indices = capa_filtro_numero_video_nuevo(pregunta)
-    if FAISS_INDEX is None:
+    
+    if lista_indices:
         cargar_todos_los_indices_nuevo(lista_indices)
+    elif FAISS_INDEX is None:
+        cargar_todos_los_indices_nuevo()
     
 
     

@@ -90,4 +90,3 @@ Consulta del usuario:
     return consulta, lista_videos
 
 
-# from scripts.servicios.cruds.personas.crud import agregar
