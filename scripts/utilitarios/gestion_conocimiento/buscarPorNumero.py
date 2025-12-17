@@ -73,17 +73,19 @@ Consulta del usuario:
     
     
     salida = response.output_text.strip()
+    if salida.startswith("```"):
+        salida = salida.strip("`")
+        salida = salida.replace("json\n", "", 1).strip()
 
     # 🔥 PARTE CLAVE: protección
-    try:
-        resultado = json.loads(salida)
-        consulta = resultado.get("consulta", pregunta)
-        lista_videos = resultado.get("lista_videos", [])
-    except Exception as e:
-        print("⚠️ WARNING: El modelo no devolvió JSON válido")
-        print("Salida del modelo:", salida)
 
-        # Fallback seguro
+    try:
+        data = json.loads(salida)
+        consulta = data.get("consulta", pregunta)
+        lista_videos = data.get("lista_videos", [])
+    except Exception:
+        print("⚠️ WARNING: El modelo no devolvió JSON válido")
+        print("Salida del modelo:", response.output_text)
         consulta = pregunta
         lista_videos = []
 
