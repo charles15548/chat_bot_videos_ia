@@ -14,54 +14,54 @@ GLOBAL_METADATA = None
 EMBED_MAP = []
 
 
-def cargar_todos_los_indices():
-    """Carga todos los embeddings (.npy) y su metadata."""
+# def cargar_todos_los_indices():
+#     """Carga todos los embeddings (.npy) y su metadata."""
 
-    global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
-    EMBED_MAP = []
+#     global FAISS_INDEX, GLOBAL_METADATA, EMBED_MAP
+#     EMBED_MAP = []
 
-    print("📥 Reconstruyendo FAISS global...")
+#     print("📥 Reconstruyendo FAISS global...")
 
-    # Cargar metadata
-    if not os.path.exists(METADATA_FILE):
-        raise ValueError("⚠️ metadata.json no existe")
-    with open(METADATA_FILE, "r", encoding="utf-8") as f:
-        GLOBAL_METADATA = json.load(f)
-    todos_embeddings = []
+#     # Cargar metadata
+#     if not os.path.exists(METADATA_FILE):
+#         raise ValueError("⚠️ metadata.json no existe")
+#     with open(METADATA_FILE, "r", encoding="utf-8") as f:
+#         GLOBAL_METADATA = json.load(f)
+#     todos_embeddings = []
 
 
-    archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
-    archivos.sort()
+#     archivos = [f for f in os.listdir(INDEX_DIR) if f.endswith(".npy")]
+#     archivos.sort()
 
-    print("📂 Archivos encontrados en indices:", archivos)
+#     print("📂 Archivos encontrados en indices:", archivos)
 
-    for archivo in archivos:
-        ruta = os.path.join(INDEX_DIR, archivo)
-        vid_id = archivo.replace(".npy","").replace(".index","")
-        video_data = next((v for v in GLOBAL_METADATA["videos"] if v["num_video"] == vid_id), None)
-        if not video_data:
-            print(f"⚠️ WARNING: no hay metadata para {vid_id}, se ignora")
-            continue
+#     for archivo in archivos:
+#         ruta = os.path.join(INDEX_DIR, archivo)
+#         vid_id = archivo.replace(".npy","").replace(".index","")
+#         video_data = next((v for v in GLOBAL_METADATA["videos"] if v["num_video"] == vid_id), None)
+#         if not video_data:
+#             print(f"⚠️ WARNING: no hay metadata para {vid_id}, se ignora")
+#             continue
         
-        emb = np.load(ruta)
-        todos_embeddings.append(emb)
+#         emb = np.load(ruta)
+#         todos_embeddings.append(emb)
 
-        for chunk_idx in range(emb.shape[0]):
-            EMBED_MAP.append({
-                "video":vid_id,
-                "chunk": chunk_idx
-            })
-    # Unir todos los embeddings en un solo array
-    if not todos_embeddings:
-        raise ValueError("⚠️ No hay embeddings en indices/")
+#         for chunk_idx in range(emb.shape[0]):
+#             EMBED_MAP.append({
+#                 "video":vid_id,
+#                 "chunk": chunk_idx
+#             })
+#     # Unir todos los embeddings en un solo array
+#     if not todos_embeddings:
+#         raise ValueError("⚠️ No hay embeddings en indices/")
 
-    matriz = np.vstack(todos_embeddings)
-    print(f"📊 Total de embeddings cargados: {matriz.shape[0]}")
-    dim = matriz.shape[1]
-    index = faiss.IndexFlatL2(dim)
-    index.add(matriz)
-    FAISS_INDEX = index
-    print("✅ FAISS global listo")
+#     matriz = np.vstack(todos_embeddings)
+#     print(f"📊 Total de embeddings cargados: {matriz.shape[0]}")
+#     dim = matriz.shape[1]
+#     index = faiss.IndexFlatL2(dim)
+#     index.add(matriz)
+#     FAISS_INDEX = index
+#     print("✅ FAISS global listo")
 
 
 def cargar_todos_los_indices(lista_indices=None):

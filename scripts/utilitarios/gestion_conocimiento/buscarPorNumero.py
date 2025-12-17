@@ -55,7 +55,7 @@ Devuelve SOLO un JSON con esta estructura EXACTA:
 }}
 
 Reglas:
-- Si no se menciona ningún video, devuelve lista_videos vacía []
+- Si no se menciona ningún numero de video, devuelve lista_videos vacía []
 - No agregues texto fuera del JSON
 
 Lista de videos:
@@ -66,7 +66,7 @@ Consulta del usuario:
 """
 
     response = client.responses.create(
-        model="gpt-4.1-nano",
+        model="gpt-4.1-mini",
         input=prompt
     )
 
