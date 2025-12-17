@@ -4,7 +4,15 @@
       "id": 1,
       "nombre": "admin",
       "correo": "admin@gmail.com",
-      "contrasena": "admin"
+      "contrasena": "admin",
+      "tipo": "admin"
+    },
+    {
+      "id": 2,
+      "nombre": "usuario",
+      "correo": "usuario@gmail.com",
+      "contrasena": "usuario",
+      "tipo": "usuario"
     }
   ]
 }

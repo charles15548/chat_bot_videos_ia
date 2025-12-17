@@ -166,7 +166,7 @@ def acceso(correo,contrasena):
         SECRET_KEY,
         algorithm=ALGORITHM
     )
-    return {"id": user["id"],"token":token, "message": "Ingresando"}
+    return {"id": user["id"], "tipo":user["tipo"] , "token":token, "message": "Ingresando"}
     
 
 
