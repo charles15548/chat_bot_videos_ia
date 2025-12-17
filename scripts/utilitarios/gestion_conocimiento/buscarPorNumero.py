@@ -70,6 +70,24 @@ Consulta del usuario:
         input=prompt
     )
 
-    resultado = json.loads(response.output_text.strip())
+    
+    
+    salida = response.output_text.strip()
 
-    return resultado["consulta"], resultado["lista_videos"]
+    # 🔥 PARTE CLAVE: protección
+    try:
+        resultado = json.loads(salida)
+        consulta = resultado.get("consulta", pregunta)
+        lista_videos = resultado.get("lista_videos", [])
+    except Exception as e:
+        print("⚠️ WARNING: El modelo no devolvió JSON válido")
+        print("Salida del modelo:", salida)
+
+        # Fallback seguro
+        consulta = pregunta
+        lista_videos = []
+
+    return consulta, lista_videos
+
+
+# from scripts.servicios.cruds.personas.crud import agregar
