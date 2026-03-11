@@ -5,7 +5,8 @@ import os
 import numpy as np
 import jwt,datetime,json
 
-
+from scripts.servicios.cruds.personas.crud import agregar
+agregar("admin","admin@gmail.com","admin","admin")
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = "clave101"
 ALGORITHM = "HS256"
@@ -13,8 +14,72 @@ ALGORITHM = "HS256"
 engine = create_engine(DATABASE_URL)
 
 
-DATA_DIR ="/opt/render/proyect/src/data"
+DATA_DIR ="/opt/render/project/src/data"
 USER = os.path.join(DATA_DIR,"users.json")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+
+
+
+
+def agregar(nombre, correo, contrasena,tipo):
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    # Leer si ya existe
+    if os.path.exists(USER):
+        
+        with open(USER, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+    else:
+        data = {"usuarios": []}
+
+    nuevo_id = (max([u["id"] for u in data["usuarios"]] or [0]) + 1)
+    nuevo_usuario = {
+        "id": nuevo_id,
+        "nombre": nombre,
+        "correo": correo,
+        "contrasena": contrasena,
+        "tipo" : tipo
+    }
+
+    data["usuarios"].append(nuevo_usuario)
+
+    with open(USER, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    print(f"✅ Usuario '{nombre}' agregado correctamente.")
+    return nuevo_usuario
+
+def acceso(correo,contrasena):
+
+    if not os.path.exists(USER):
+       return{"id":0, "message": "No hay usuarios registrados"}
+
+    try:
+        with open(USER,"r",encoding="utf-8") as f:
+           data = json.load(f)
+    except json.JSONDecodeError:
+       return {"id":0, "message": "Archivo de usuario dañado"}
+
+    user = next((u for u in data["usuarios"] if u["correo"] == correo),None)
+    if not user:
+        return {"id":0, "message":"No se encontró Usuario"}
+    if user["contrasena"] != contrasena:
+        return {"id":0, "message":"Contraseña incorrecta"}
+    
+    # Crear token JWT (igual que antes)
+    exp = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+    token = jwt.encode(
+        {"id": user["id"], "correo": user["correo"], "exp": exp},
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    return {"id": user["id"], "tipo":user["tipo"] , "token":token, "message": "Ingresando"}
+    
+
+
+
 
 
 
@@ -76,36 +141,7 @@ USER = os.path.join(DATA_DIR,"users.json")
 #         else:
 #             return {"id": 0, "message":"No se encontro usuario"}
  
-
-def agregar(nombre, correo, contrasena,tipo):
-    os.makedirs(DATA_DIR, exist_ok=True)
-
-    # Leer si ya existe
-    if os.path.exists(USER):
-        
-        with open(USER, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        
-    else:
-        data = {"usuarios": []}
-
-    nuevo_id = (max([u["id"] for u in data["usuarios"]] or [0]) + 1)
-    nuevo_usuario = {
-        "id": nuevo_id,
-        "nombre": nombre,
-        "correo": correo,
-        "contrasena": contrasena,
-        "tipo" : tipo
-    }
-
-    data["usuarios"].append(nuevo_usuario)
-
-    with open(USER, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    print(f"✅ Usuario '{nombre}' agregado correctamente.")
-    return nuevo_usuario
-
+ 
 
 # def acceso(correo,contrasena):
 
@@ -132,34 +168,6 @@ def agregar(nombre, correo, contrasena,tipo):
             
 #         else:
 #             return {"id": 0, "message":"No se encontro usuario"}
-
-def acceso(correo,contrasena):
-
-    if not os.path.exists(USER):
-       return{"id":0, "message": "No hay usuarios registrados"}
-
-    try:
-        with open(USER,"r",encoding="utf-8") as f:
-           data = json.load(f)
-    except json.JSONDecodeError:
-       return {"id":0, "message": "Archivo de usuario dañado"}
-
-    user = next((u for u in data["usuarios"] if u["correo"] == correo),None)
-    if not user:
-        return {"id":0, "message":"No se encontró Usuario"}
-    if user["contrasena"] != contrasena:
-        return {"id":0, "message":"Contraseña incorrecta"}
-    
-    # Crear token JWT (igual que antes)
-    exp = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
-    token = jwt.encode(
-        {"id": user["id"], "correo": user["correo"], "exp": exp},
-        SECRET_KEY,
-        algorithm=ALGORITHM
-    )
-    return {"id": user["id"], "tipo":user["tipo"] , "token":token, "message": "Ingresando"}
-    
-
 
 
 
