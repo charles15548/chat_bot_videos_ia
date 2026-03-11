@@ -5,8 +5,7 @@ import os
 import numpy as np
 import jwt,datetime,json
 
-from scripts.servicios.cruds.personas.crud import agregar
-agregar("admin","admin@gmail.com","admin","admin")
+ 
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = "clave101"
 ALGORITHM = "HS256"
@@ -79,6 +78,8 @@ def acceso(correo,contrasena):
     
 
 
+if __name__ == "__main__":
+    agregar("admin","admin@gmail.com","admin","admin")
 
 
 
