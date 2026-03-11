@@ -52,46 +52,102 @@ def agregar(nombre, correo, contrasena,tipo):
     print(f"✅ Usuario '{nombre}' agregado correctamente.")
     return nuevo_usuario
 
-def acceso(correo,contrasena):
+# def acceso(correo,contrasena):
 
+#     if not os.path.exists(USER):
+#        return{"id":0, "message": "No hay usuarios registrados"}
+
+#     try:
+#         with open(USER,"r",encoding="utf-8") as f:
+#            data = json.load(f)
+#     except json.JSONDecodeError:
+#        return {"id":0, "message": "Archivo de usuario dañado"}
+
+#     user = next((u for u in data["usuarios"] if u["correo"] == correo),None)
+#     if not user:
+#         return {"id":0, "message":"No se encontró Usuario"}
+#     if user["contrasena"] != contrasena:
+#         return {"id":0, "message":"Contraseña incorrecta"}
+    
+#     # Crear token JWT (igual que antes)
+#     exp = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+#     token = jwt.encode(
+#         {
+#             "id": user.get("id"),
+#             "correo": user.get("correo"),
+#             "exp": exp
+#         },
+#         SECRET_KEY,
+#         algorithm=ALGORITHM
+#     )
+#     return {
+#         "id": user.get("id", 0),
+#         "tipo": user.get("tipo", "usuario"),
+#         "token": token,
+#         "message": "Ingresando"
+#     }
+
+
+def acceso(correo, contrasena):
+
+    # Si no existe el archivo lo creamos con usuarios por defecto
     if not os.path.exists(USER):
-       return{"id":0, "message": "No hay usuarios registrados"}
 
-    try:
-        with open(USER,"r",encoding="utf-8") as f:
-           data = json.load(f)
-    except json.JSONDecodeError:
-       return {"id":0, "message": "Archivo de usuario dañado"}
+        data = {
+            "usuarios":[
+                {
+                    "id":1,
+                    "nombre":"admin",
+                    "correo":"admin@gmail.com",
+                    "contrasena":"admin",
+                    "tipo":"admin"
+                },
+                {
+                    "id":2,
+                    "nombre":"usuario",
+                    "correo":"usuario@gmail.com",
+                    "contrasena":"usuario",
+                    "tipo":"usuario"
+                }
+            ]
+        }
+
+        with open(USER,"w",encoding="utf-8") as f:
+            json.dump(data,f,indent=2)
+
+    # leer usuarios
+    with open(USER,"r",encoding="utf-8") as f:
+        data = json.load(f)
 
     user = next((u for u in data["usuarios"] if u["correo"] == correo),None)
+
     if not user:
-        return {"id":0, "message":"No se encontró Usuario"}
+        return {"id":0,"message":"No se encontró Usuario"}
+
     if user["contrasena"] != contrasena:
-        return {"id":0, "message":"Contraseña incorrecta"}
-    
-    # Crear token JWT (igual que antes)
+        return {"id":0,"message":"Contraseña incorrecta"}
+
     exp = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+
     token = jwt.encode(
         {
-            "id": user.get("id"),
-            "correo": user.get("correo"),
+            "id": user["id"],
+            "correo": user["correo"],
             "exp": exp
         },
         SECRET_KEY,
         algorithm=ALGORITHM
     )
+
     return {
-        "id": user.get("id", 0),
-        "tipo": user.get("tipo", "usuario"),
+        "id": user["id"],
+        "tipo": user.get("tipo","usuario"),
         "token": token,
         "message": "Ingresando"
     }
     
 
-
-if __name__ == "__main__":
-    agregar("admin","admin@gmail.com","admin","admin")
-
+ 
 
 
 
