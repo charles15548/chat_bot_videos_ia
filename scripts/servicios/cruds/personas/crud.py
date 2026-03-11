@@ -13,8 +13,10 @@ ALGORITHM = "HS256"
 engine = create_engine(DATABASE_URL)
 
 
-DATA_DIR ="/opt/render/project/src/data"
-USER = os.path.join(DATA_DIR,"users.json")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+USER = os.path.join(DATA_DIR, "users.json")
+
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
@@ -70,11 +72,20 @@ def acceso(correo,contrasena):
     # Crear token JWT (igual que antes)
     exp = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
     token = jwt.encode(
-        {"id": user["id"], "correo": user["correo"], "exp": exp},
+        {
+            "id": user.get("id"),
+            "correo": user.get("correo"),
+            "exp": exp
+        },
         SECRET_KEY,
         algorithm=ALGORITHM
     )
-    return {"id": user["id"], "tipo":user["tipo"] , "token":token, "message": "Ingresando"}
+    return {
+        "id": user.get("id", 0),
+        "tipo": user.get("tipo", "usuario"),
+        "token": token,
+        "message": "Ingresando"
+    }
     
 
 
